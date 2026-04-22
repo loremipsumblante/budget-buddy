@@ -1,6 +1,8 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { Header } from "@/components/Header";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -29,21 +31,21 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Pocket — Expense tracker & budget saver" },
+      {
+        name: "description",
+        content:
+          "Set a weekly, bi-weekly, monthly or custom budget, track expenses, and get smart tips to help you save.",
+      },
+      { property: "og:title", content: "Pocket — Expense tracker & budget saver" },
+      {
+        property: "og:description",
+        content: "Plan your spending, track expenses, and hit your saving goals.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-    ],
+    links: [{ rel: "stylesheet", href: appCss }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -65,5 +67,13 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  return <Outlet />;
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <Header />
+      <main className="mx-auto max-w-5xl px-4 py-6">
+        <Outlet />
+      </main>
+      <Toaster />
+    </div>
+  );
 }
