@@ -10,14 +10,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { AuthForm } from "@/components/AuthForm";
 import { BudgetSummary } from "@/components/BudgetSummary";
 import { DailyAllowance } from "@/components/DailyAllowance";
 import { CategoryBreakdown } from "@/components/CategoryBreakdown";
 import { ExpenseForm } from "@/components/ExpenseForm";
 import { ExpenseList } from "@/components/ExpenseList";
 import { SmartTips } from "@/components/SmartTips";
+import { MarketingLanding } from "@/components/MarketingLanding";
 import { useActiveBudget, useStore } from "@/hooks/useStore";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,14 +35,7 @@ export const Route = createFileRoute("/")({
 
 function EmptyState() {
   return (
-    <div className="grid place-items-center py-12 gap-10">
-      
-      {/* 1. Here is your Login / Sign Up Form */}
-      <div className="w-full max-w-md">
-        <AuthForm />
-      </div>
-
-      {/* 2. Here is your original Welcome Card below it */}
+    <div className="grid place-items-center py-12">
       <Card className="max-w-md w-full text-center shadow-[var(--shadow-card)]">
         <CardContent className="space-y-4 p-8">
           <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-primary to-primary-glow text-primary-foreground">
@@ -59,16 +53,17 @@ function EmptyState() {
           </Button>
         </CardContent>
       </Card>
-      
     </div>
   );
 }
 
 function Dashboard() {
+  const { user } = useAuth();
   const budget = useActiveBudget();
   const { expenses } = useStore();
   const [open, setOpen] = useState(false);
 
+  if (!user) return <MarketingLanding />;
   if (!budget) return <EmptyState />;
 
   const own = expenses.filter((e) => e.budgetId === budget.id);

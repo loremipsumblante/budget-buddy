@@ -1,8 +1,10 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { Outlet, Link, createRootRoute, HeadContent, Scripts, useLocation } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
 import { Header } from "@/components/Header";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider, useAuth } from "@/lib/auth";
+import { useHydrated } from "@/hooks/useStore";
 
 function NotFoundComponent() {
   return (
@@ -66,7 +68,25 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function RootComponent() {
+function AppShell() {
+  const { loading } = useAuth();
+  const hydrated = useHydrated();
+  const location = useLocation();
+  const isLogin = location.pathname === "/login";
+
+  if (loading || !hydrated) {
+    return <div className="min-h-screen bg-background" />;
+  }
+
+  if (isLogin) {
+    return (
+      <>
+        <Outlet />
+        <Toaster />
+      </>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Header />
@@ -75,5 +95,13 @@ function RootComponent() {
       </main>
       <Toaster />
     </div>
+  );
+}
+
+function RootComponent() {
+  return (
+    <AuthProvider>
+      <AppShell />
+    </AuthProvider>
   );
 }
